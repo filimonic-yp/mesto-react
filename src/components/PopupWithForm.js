@@ -1,5 +1,4 @@
 import React from 'react';
-import './PopupWithForm.css';
 
 class PopupWithForm extends React.Component {
   constructor(props) {
@@ -16,6 +15,7 @@ class PopupWithForm extends React.Component {
         <form className="editor" name={`editor_${this.props.name}`} noValidate>
           <p className="editor__title">{this.props.title}</p>
           {this.props.children}
+          <button className="editor__btn-submit hover-breathing hover-breathing_shallow" type="submit" name="submit" value="save-info">{this.props.buttonTextNormal}</button>
           <button className="popup__btn-close editor__btn-close hover-breathing hover-breathing_deep" type="button" onClick={this.props.onClose}></button>
         </form>
       </div>

@@ -1,5 +1,4 @@
 import React from 'react';
-import './ImagePopup.css';
 
 class ImagePopup extends React.Component {
   render() {

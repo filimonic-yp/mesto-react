@@ -3,7 +3,6 @@ import Card from './Card';
 import api from '../utils/APIExtension';
 import EmptyImageUrl from '../utils/EmptyImageUrl';
 
-import './Main.css';
 
 class Main extends React.Component {
 
@@ -24,6 +23,7 @@ class Main extends React.Component {
       .then((data) => this.updateMe(data))
       .then(() => api.getInitialCards())
       .then((data) => this.updateCards(data))
+      .catch((e) => console.log(e));
   }
 
   updateMe = ({name, about, avatar}) => {
