@@ -1,0 +1,29 @@
+/* header */
+.header {
+    height: 56px;
+    margin-bottom: 42px;
+    border-bottom: 1px solid rgba(84, 84, 84, .7);
+  }
+  
+  @media screen and (min-width: 320px) {
+    .header {
+      height: 74px;
+      margin-bottom: 40px;
+    }
+  }
+
+/* header__logo */
+  .header__logo {
+    background-image: url(Header.logo.svg);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    height: 34px;
+    margin-left: 27px;
+  }
+  
+  @media screen and (min-width: 882px) {
+    .header__logo {
+      margin: 0 max(0px, 27px -  calc(100vw - 882px));
+    }
+  }
+  
