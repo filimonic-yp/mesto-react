@@ -2,7 +2,7 @@
 
 ## Место: Как инстаграм, только проще
 
-[Ссылка на gh-pages](https://filimonic-yp.github.io/mesto-react)
+[Ссылка на gh-pages](https://filimonic-yp.github.io/mesto-react/)
 
 
 ### Описание
