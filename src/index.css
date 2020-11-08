@@ -1,0 +1,15 @@
+@import url(./vendor/normalize.css);
+@import url(./fonts/fonts_inter.css); /* Inter font [ https://rsms.me/inter/#free ] */
+@import url(./blocks/page/page.css);
+@import url(./blocks/profile/profile.css);
+@import url(./blocks/cards/cards.css);
+@import url(./blocks/card/card.css);
+/* popup loadorder */
+@import url(./blocks/popup/popup.css);
+@import url(./blocks/popup/_opened/popup_opened.css);
+@import url(./blocks/popup/__editor-container/popup__editor-container.css);
+@import url(./blocks/popup/__viewer-container/popup__viewer-container.css);
+@import url(./blocks/popup-viewer/popup-viewer.css);
+@import url(./blocks/viewer/viewer.css);
+@import url(./blocks/editor/editor.css);
+@import url(./blocks/hover-breathing/hover-breathing.css);
