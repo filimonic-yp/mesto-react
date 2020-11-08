@@ -17,7 +17,6 @@ class App extends React.Component {
     }
   }
 
-<<<<<<< HEAD
   handleEditAvatarClick = () => this.setState({isEditAvatarPopupOpen: true});
 
   handleEditProfileClick = () => this.setState({isEditProfilePopupOpen: true});
@@ -25,24 +24,6 @@ class App extends React.Component {
   handleAddPlaceClick = () => this.setState({isAddPlacePopupOpen: true});
 
   handleCardClick = (card) => this.setState({selectedCard: card});
-=======
-  handleEditAvatarClick = () => {
-    this.setState({isEditAvatarPopupOpen: true});
-    //document.querySelector('.popup-editor_avatar').classList.add('popup_opened');
-  };
-  handleEditProfileClick = () => {
-    this.setState({isEditProfilePopupOpen: true});
-    //document.querySelector('.popup-editor_profile').classList.add('popup_opened');
-  };
-  handleAddPlaceClick = () => {
-    this.setState({isAddPlacePopupOpen: true});
-    //document.querySelector('.popup-editor_image-adder').classList.add('popup_opened');
-  };
-
-  handleCardClick = (card) => {
-    this.setState({selectedCard: card});
-  }
->>>>>>> 0bf3818d95e686ac7c5e989e271773b8af3d4465
 
   closeAllPopups = () => {
     this.setState({
