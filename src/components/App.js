@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from './Header';
 import Main from './Main';
-import PopupWithForm from './PopupWithForm';
+// import PopupWithForm from './PopupWithForm';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
@@ -145,6 +145,7 @@ class App extends React.Component {
 
       <ImagePopup isOpen={!!this.state.selectedCard} card={this.state.selectedCard} onClose={this.closeAllPopups}/>
 
+      {/*
       <PopupWithForm
         name="confirmer"
         title="Вы уверены?"
@@ -153,6 +154,7 @@ class App extends React.Component {
         isOpen={false}
         onClose={this.closeAllPopups}>
       </PopupWithForm>
+      */}
 
       <Footer />
 
