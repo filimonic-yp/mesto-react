@@ -1,4 +1,6 @@
-export default class API {
+import apiConfig from './API.config';
+
+class API {
   constructor({baseUrl, headers}) {
     this._baseUrl = baseUrl;
     this._headers = headers;
@@ -69,3 +71,5 @@ export default class API {
     });
   }
 }
+
+export default new API(apiConfig);
