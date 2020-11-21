@@ -1,11 +1,6 @@
 import React from 'react';
 
 class PopupWithForm extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-
   render() {
     return (
       <div className={`popup popup-editor popup-editor_${this.props.name} ${this.props.isOpen && 'popup_opened'}`} onClick={(e) => e.target === e.currentTarget && this.props.onClose()}>
