@@ -1,10 +1,14 @@
 import React from 'react';
 import Card from './Card';
-import api from '../utils/APIExtension';
 import EmptyImageUrl from '../utils/EmptyImageUrl';
+import {CurrentUserContext} from '../contexts/CurrentUserContext';
+
+
 
 
 class Main extends React.Component {
+
+  static contextType = CurrentUserContext;
 
   constructor(props) {
     super(props);
@@ -13,18 +17,9 @@ class Main extends React.Component {
       userName: '',
       userDescription: '',
       userAvatar: EmptyImageUrl,
-      cards: [],
     }
   }
 
-  componentDidMount() {
-    api
-      .getMe()
-      .then((data) => this.updateMe(data))
-      .then(() => api.getInitialCards())
-      .then((data) => this.updateCards(data))
-      .catch((e) => console.log(e));
-  }
 
   updateMe = ({name, about, avatar}) => {
     this.setState({
@@ -34,11 +29,7 @@ class Main extends React.Component {
     })
   }
 
-  updateCards = (cards) => {
-    this.setState({
-      cards:cards,
-    })
-  }
+
 
   render() {
     return (
@@ -46,25 +37,27 @@ class Main extends React.Component {
 
         <section className="profile">
           <div className="profile__avatar-box">
-            <img className="profile__avatar" alt={`${this.state.userName}, ${this.state.userDescription}`} src={this.state.userAvatar} />
+            <img className="profile__avatar" alt={`${this.context.name}, ${this.context.about}`} src={this.context.avatar} />
             <button className="profile__btn-set-avatar" type="button" onClick={this.props.onEditAvatar}></button>
           </div>
           <div className="profile__info">
             <div className="profile__display-name-wrapper">
-              <h1 className="profile__display-name">{this.state.userName}</h1>
+              <h1 className="profile__display-name">{this.context.name}</h1>
               <button className="profile__btn-edit hover-breathing hover-breathing_deep" type="button" onClick={this.props.onEditProfile}></button>
             </div>
-            <p className="profile__job">{this.state.userDescription}</p>
+            <p className="profile__job">{this.context.about}</p>
           </div>
           <button className="profile__btn-add hover-breathing hover-breathing_deep" type="button" onClick={this.props.onAddPlace}></button>
         </section>
 
         <ul className="cards">
-          {this.state.cards.map( (card) =>
+          {this.props.cards.map( (card) =>
             <Card
               key={card._id}
               card={card}
               onClick={() => this.props.onCardClick(card)}
+              onCardLike={() => this.props.onCardLike(card)}
+              onCardDelete={() => this.props.onCardDelete(card)}
             />
           )}
         </ul>

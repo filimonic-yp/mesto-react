@@ -10,6 +10,7 @@ import APIConfig from './API.config';
     Также в лучае отсутствия информации, класс запрашивает недостающую информацию из /users/me (например, перед получением карточки) и хранит _id пользователя
 */
 
+/*
 class APIExtension extends API {
   constructor (options)
   {
@@ -71,5 +72,5 @@ class APIExtension extends API {
   }
 
 }
-
-export default new APIExtension(APIConfig);
+*/
+export default new API(APIConfig);

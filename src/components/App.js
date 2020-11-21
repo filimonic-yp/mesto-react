@@ -2,8 +2,14 @@ import React from 'react';
 import Header from './Header';
 import Main from './Main';
 import PopupWithForm from './PopupWithForm';
+import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
 import ImagePopup from './ImagePopup';
 import Footer from './Footer';
+import api from '../utils/APIExtension';
+import {CurrentUserContext, defaultUser} from '../contexts/CurrentUserContext';
+
 
 class App extends React.Component {
 
@@ -13,8 +19,23 @@ class App extends React.Component {
       isEditProfilePopupOpen: false,
       isAddPlacePopupOpen: false,
       isEditAvatarPopupOpen: false,
-      selectedCard: undefined
+      selectedCard: undefined,
+      currentUser: defaultUser,
+      cards: [],
     }
+
+  }
+
+  componentDidMount() {
+    Promise.all([
+      api
+        .getMe()
+        .then(data => this.setState({currentUser: data })),
+      api
+        .getInitialCards()
+        .then((data) => this.updateCards(data))
+      ])
+      .catch(e => console.error('Error', e));
   }
 
   handleEditAvatarClick = () => this.setState({isEditAvatarPopupOpen: true});
@@ -24,6 +45,55 @@ class App extends React.Component {
   handleAddPlaceClick = () => this.setState({isAddPlacePopupOpen: true});
 
   handleCardClick = (card) => this.setState({selectedCard: card});
+
+  handleCardLike = (likedCard) => {
+    console.log('hcl', likedCard)
+    const isLiked = likedCard.likes.some(likedUser => likedUser._id === this.state.currentUser._id);
+    (isLiked
+      ? api.dislikeCard(likedCard._id)
+      : api.likeCard(likedCard._id))
+      .then(newCard => this.updateCards(this.state.cards.map( card => card._id === newCard._id ? newCard : card )))
+      .catch(e => console.error('Unable to process like', e));
+  }
+
+  handleCardDelete = (deletedCard) => {
+    api
+      .deleteCard(deletedCard._id)
+      .then(this.setState({cards: this.state.cards.filter(card => deletedCard._id !== card._id)}))
+      .catch(e => console.error('Unable to delete card', e));
+  }
+
+  updateCards = (cards) => {
+    this.setState({
+      cards:cards,
+    })
+  }
+
+
+
+  handleUpdateUser = (user) => {
+    this.closeAllPopups();
+    api
+      .updateMe(user)
+      .then(newUserData => this.setState({currentUser: newUserData}))
+      .catch(e => console.error('Error updating user', e));
+  }
+
+  handleUpdateAvatar = (avatar) => {
+    this.closeAllPopups();
+    api
+      .setAvatar(avatar)
+      .then(newUserData => this.setState({currentUser: newUserData}))
+      .catch(e => console.error('Error updating user avatar', e));
+  }
+
+  handleAddPlaceSubmit = (place) => {
+    this.closeAllPopups();
+    api
+      .sendCard(place)
+      .then(newCard => this.setState({cards: [newCard, ...this.state.cards]}))
+      .catch(e => console.error('Error adding card', e));
+  }
 
   closeAllPopups = () => {
     this.setState({
@@ -39,53 +109,41 @@ class App extends React.Component {
       <div className="page__wrapper">
 
       <Header />
+      <CurrentUserContext.Provider value={this.state.currentUser}>
+        <Main
+          onEditAvatar = {this.handleEditAvatarClick}
+          onEditProfile = {this.handleEditProfileClick}
+          onAddPlace = {this.handleAddPlaceClick}
+          onCardClick = {this.handleCardClick}
+          onCardLike = {this.handleCardLike}
+          onCardDelete = {this.handleCardDelete}
+          cards = {this.state.cards}
+        />
+      </CurrentUserContext.Provider>
 
-      <Main
-        onEditAvatar = {this.handleEditAvatarClick}
-        onEditProfile = {this.handleEditProfileClick}
-        onAddPlace = {this.handleAddPlaceClick}
-        onCardClick = {this.handleCardClick}
+      <CurrentUserContext.Provider value={this.state.currentUser}>
+        <EditProfilePopup
+          isOpen={this.state.isEditProfilePopupOpen}
+          onClose={this.closeAllPopups}
+          onUpdateUser={this.handleUpdateUser}
+        />
+      </CurrentUserContext.Provider>
+
+      <CurrentUserContext.Provider value={this.state.currentUser}>
+        <EditAvatarPopup
+          isOpen={this.state.isEditAvatarPopupOpen}
+          onClose={this.closeAllPopups}
+          onUpdateAvatar={this.handleUpdateAvatar}
+          />
+      </CurrentUserContext.Provider>
+
+      <AddPlacePopup
+          isOpen={this.state.isAddPlacePopupOpen}
+          onClose={this.closeAllPopups}
+          onAddPlace={this.handleAddPlaceSubmit}
       />
 
-      <PopupWithForm
-        name="profile"
-        title="Редактировать профиль"
-        buttonTextNormal="Сохранить"
-        buttonTextProgress="Сохраняю..."
-        isOpen={this.state.isEditProfilePopupOpen}
-        onClose={this.closeAllPopups}>
-
-        <input className="editor__input editor__input_display-name" type="text" autoComplete="name" data-error-element-id="editor_profile__display-name-error" placeholder="Имя" name="display-name" required maxLength="40" minLength="2" />
-        <span className="editor__error editor__error_hidden" id="editor_profile__display-name-error"> </span>
-        <input className="editor__input editor__input_job" type="text" name="job" data-error-element-id="editor_profile__job-error" placeholder="Род занятий" required maxLength="200" minLength="2" />
-        <span className="editor__error editor__error_hidden" id="editor_profile__job-error"> </span>
-      </PopupWithForm>
-
-      <PopupWithForm
-        name="image-adder"
-        title="Новое место"
-        buttonTextNormal="Создать"
-        buttonTextProgress="Создаю..."
-        isOpen={this.state.isAddPlacePopupOpen}
-        onClose={this.closeAllPopups}>
-
-        <input className="editor__input editor__input_display-name" type="text" name="display-name" data-error-element-id="editor_image-adder__display-name-error" placeholder="Название" required maxLength="30" minLength="1" />
-        <span className="editor__error editor__error_hidden" id="editor_image-adder__display-name-error"> </span>
-        <input className="editor__input editor__input_url" type="url" name="image-url" data-error-element-id="editor_image-adder__image-url-error" required placeholder="Ссылка на картинку" />
-        <span className="editor__error editor__error_hidden" id="editor_image-adder__image-url-error"> </span>
-      </PopupWithForm>
-
-      <PopupWithForm
-        name="avatar"
-        title="Обновить аватар"
-        buttonTextNormal="Сохранить"
-        buttonTextProgress="Сохраняю..."
-        isOpen={this.state.isEditAvatarPopupOpen}
-        onClose={this.closeAllPopups}>
-
-        <input className="editor__input editor__input_url" type="url" name="image-url" data-error-element-id="editor_image-adder__image-url-error" required placeholder="Ссылка на картинку аватара" />
-        <span className="editor__error editor__error_hidden" id="editor_image-adder__image-url-error"></span>
-      </PopupWithForm>
+      <ImagePopup isOpen={!!this.state.selectedCard} card={this.state.selectedCard} onClose={this.closeAllPopups}/>
 
       <PopupWithForm
         name="confirmer"
@@ -95,8 +153,6 @@ class App extends React.Component {
         isOpen={false}
         onClose={this.closeAllPopups}>
       </PopupWithForm>
-
-      <ImagePopup isOpen={!!this.state.selectedCard} card={this.state.selectedCard} onClose={this.closeAllPopups}/>
 
       <Footer />
 
