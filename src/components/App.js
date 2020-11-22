@@ -19,7 +19,7 @@ class App extends React.Component {
       isEditProfilePopupOpen: false,
       isAddPlacePopupOpen: false,
       isEditAvatarPopupOpen: false,
-      selectedCard: undefined,
+      selectedCard: {},
       currentUser: defaultUser,
       cards: [],
     }
@@ -72,26 +72,26 @@ class App extends React.Component {
 
 
   handleUpdateUser = (user) => {
-    this.closeAllPopups();
     api
       .updateMe(user)
       .then(newUserData => this.setState({currentUser: newUserData}))
+      .then(() => this.closeAllPopups())
       .catch(e => console.error('Error updating user', e));
   }
 
   handleUpdateAvatar = (avatar) => {
-    this.closeAllPopups();
     api
       .setAvatar(avatar)
       .then(newUserData => this.setState({currentUser: newUserData}))
+      .then(() => this.closeAllPopups())
       .catch(e => console.error('Error updating user avatar', e));
   }
 
   handleAddPlaceSubmit = (place) => {
-    this.closeAllPopups();
     api
       .sendCard(place)
       .then(newCard => this.setState({cards: [newCard, ...this.state.cards]}))
+      .then(() => this.closeAllPopups())
       .catch(e => console.error('Error adding card', e));
   }
 
@@ -100,7 +100,7 @@ class App extends React.Component {
       isAddPlacePopupOpen: false,
       isEditProfilePopupOpen: false,
       isEditAvatarPopupOpen: false,
-      selectedCard: undefined
+      selectedCard: {},
     });
   }
 
@@ -119,17 +119,13 @@ class App extends React.Component {
           onCardDelete = {this.handleCardDelete}
           cards = {this.state.cards}
         />
-      </CurrentUserContext.Provider>
 
-      <CurrentUserContext.Provider value={this.state.currentUser}>
         <EditProfilePopup
           isOpen={this.state.isEditProfilePopupOpen}
           onClose={this.closeAllPopups}
           onUpdateUser={this.handleUpdateUser}
         />
-      </CurrentUserContext.Provider>
 
-      <CurrentUserContext.Provider value={this.state.currentUser}>
         <EditAvatarPopup
           isOpen={this.state.isEditAvatarPopupOpen}
           onClose={this.closeAllPopups}
@@ -143,7 +139,7 @@ class App extends React.Component {
           onAddPlace={this.handleAddPlaceSubmit}
       />
 
-      <ImagePopup isOpen={!!this.state.selectedCard} card={this.state.selectedCard} onClose={this.closeAllPopups}/>
+      <ImagePopup isOpen={!!this.state.selectedCard.link} card={this.state.selectedCard} onClose={this.closeAllPopups}/>
 
       {/*
       <PopupWithForm
